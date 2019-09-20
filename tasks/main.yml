@@ -1,0 +1,15 @@
+---
+- name: Configure /etc/default/grub
+  lineinfile:
+    path: /etc/default/grub
+    backup: yes
+    regexp: '^GRUB_CMDLINE_LINUX="(.*?)?(?:scsi_mod.use_blk_mq=1 )?(.*?)?"$'
+    line: 'GRUB_CMDLINE_LINUX="\1scsi_mod.use_blk_mq=1 \2"'
+    backrefs: yes
+  notify: [ 'Update Boot Image' ]
+- name: Configure udev rule
+  copy:
+    src: 60-scheduler.rules
+    dest: /etc/udev/rules.d/60-scheduler.rules
+  notify: [ "udev" ]
+
